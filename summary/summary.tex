@@ -88,7 +88,7 @@
 	$Enc_k(m) = k xor m$\\
 	$Dec_k(m) = k xor c$\\
 	$\Rightarrow$ This is perfectly secure but not practical because a key can only be used once (otherwise same ciphertext for same plaintext) and therefore must be as long as the message which is also not practical. So there's no other perfectly secret cipher.\\
-	$\Rightarrow$ Other encryption sche\\mes rely on a limitation of the adversary's power (mostly meant \underline{computational} power)
+	$\Rightarrow$ Other encryption schemes rely on a limitation of the adversary's power (mostly meant \underline{computational} power)
 	\textbf{Computational security} A system $X$ is $(t,\epsilon)$-secure if every Turing Machine that operates in time $t$ can break it with probability at most $\epsilon$ where $\epsilon$ is negligible (close to 0).
 	
 	\subsection{Attacks}
@@ -101,7 +101,71 @@
 	\textbf{One-way functions} are functions that are poly-time computable and hard to invert. Rely on a mathematical hardness assumption.\\
 	\textbf{Pseudorandom generators (PRG)} Generate bits that look random. Depens on a seed (for example system time). Can be constructed by using a one-way function. They are cryptographic if it's not % TODO finish definition\\
 	\textbf{Stream cipher} cipher with an infinite stream of bits as output (for example RC4 used for WEP, WPA) $\rightarrow$ PRGs are stream ciphers\\
-	\textbf{Block ciphers} % TODO continue with slide 47, presentation 03
+	\textbf{Block ciphers} are almost equal to pseudorandom permutations (PRP) (permutation is pseudorandom if it can't be distinguished from a real random permutation). Block ciphers permute a predefined amount of plaintext or data into a ciphertext of the same length. Popular block ciphers are:\\
+	\begin{tabular}{|l|c|c|}
+		\hline 
+		& \textbf{key length} & \textbf{block length} \\ 
+		\hline 
+		DES (Data Encryption Standard) & 56 & 64 \\ 
+		\hline 
+		IDEA (International Data Encryption Algorithm) & 128 & 64 \\ 
+		\hline 
+		AES (Advanced Encryption Standard) & 128, 192 or 256 & 128 \\ 
+		\hline 
+	\end{tabular}\\
+	\textbf{Padding} If a stream encrypted with a block cipher the last plaintext block needs to be padded (for example PKCS\#5: add $x$ bytes with value $x$)
+	
+	\subsubsection{Modes of operation}
+	They describe how large amounts of plaintext can be encrypted using block ciphers.\\
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline 
+		& ECB & CBC & OFB & CTR \\ 
+		\hline 
+		error in $c_i$ affects & $c_i$ & $c_i$, $c_{i+1}$ & $c_i$ & $c_i$ \\ 
+		\hline 
+		parallel encryption & yes & no & no & yes \\ 
+		\hline 
+		parallel decryption & yes & yes & no & yes \\ 
+		\hline 
+		change 1 bit of $m_i$ & $c_i$ & all & $c_i$ & $c_i$ \\ 
+		\hline 
+	\end{tabular}
+
+	\paragraph{Electronic Codebook (ECB)} $\leftarrow$ not secure\\
+	\includegraphics[width=0.5\textwidth]{figures/Ecb_encryption.png}
+	\includegraphics[width=0.5\textwidth]{figures/Ecb_decryption.png}\\
+	$\Rightarrow$ the same plaintext block will result the same ciphertext block
+	\paragraph{Cipher-Block Chaining (CBC)} .\\
+	\includegraphics[width=0.5\textwidth]{figures/Cbc_encryption.png}
+	\includegraphics[width=0.5\textwidth]{figures/Cbc_decryption.png}
+	\paragraph{Output Feedback Mode (OFB)} .\\
+	\includegraphics[width=0.5\textwidth]{figures/Ofb_encryption.png}
+	\includegraphics[width=0.5\textwidth]{figures/Ofb_decryption.png}
+	\paragraph{Counter Mode (CTR)} .\\
+	\includegraphics[width=0.5\textwidth]{figures/Ctr_encryption.png}
+	\includegraphics[width=0.5\textwidth]{figures/Ctr_decryption.png}
+	
+	\section{Message authentication}
+	Ensure that a message is from a specified party and was not modified during transition.
+	\textbf{Message authentication code (MAC) scheme} is a pair of tag ($Tag$) and verify ($Vrfy$) algorithm with $Vrfy_k(m,Tag_k(m)) = yes$ (tag is valid) for every plaintext message $m \in M$ plaintext space and key $k \in K$ key space. $Tag_k(m) = t$ generates a tag $t \in T$ set of tags. The verify algorithm just computes the tag again from the plaintext and compares the result with the given tag.\\
+	$\rightarrow$ can be constructed from block ciphers (f.e. CBC-MAC) or hash functions\\
+	\textbf{Replay attack} MACs do protect against the modification of the message through a third party but not against replaying an already delivered message with a valid tag again. Solution: time-stamps, sequence numbers, ...
+	\textbf{Splicing attack} A CBC-MAC should be used with the message length $|m|$ as initialization vector (IV). Otherwise a splicing attack is possible:\\
+	\includegraphics[width=\textwidth]{figures/splicing-attack.JPG}
+	
+	\subsection{Hash functions}
+	Hash functions map arbitrary input to a fixed length of output. They should be collision resistant and one-way functions.(?)\\
+	\textbf{Collision resistance} It's hard to find two inputs that have the same hash: $H(m) = H(m')$
+	\textbf{Examples} of hash functions are MD5, SHA1, SHA2, SHA256, ...\\
+	\textbf{HMAC} MAC based on a hash function: $HMAC_k(m) = H((k xor opad) || H(k xor ipad || m))$
+	
+	\subsection{Key distribution}
+	\textbf{Key distribution center} There is an authority that all the users trust with its help it's possible to exchange session keys for direct communication. Not useful in the internet.\\
+	${M}_K = Enc_{K0}(M), Tag_{K1}(Enc_{K0}(M))$ is a message $M$ that is encrypted and authenticated with key pair $K$.
+	\textbf{Needham-Schroeder protocol} is a protocol for key exchange that prevents against reply and man-in-the-middle attacks (adversary can't reply the answer of the server because of the nonce, adversary can't manipulate message from Alice to Bob to change the identity who's sending the message)\\
+	\includegraphics[width=\textwidth]{figures/needham-schroeder-protocol.JPG}\\
+	\textbf{Peer-to-peer key distribution} can be achieved with public key cryptography\\
+	% TODO continue with lecture 04
 	
 
 	

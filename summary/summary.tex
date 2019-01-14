@@ -61,9 +61,10 @@
 	\textbf{Security Threat} A potential for violation of security (interruption (a), interception (p), modification (a), fabrication (a) of information) $\rightarrow$ splits up into active and passive\\
 	\textbf{Security Attack} Action that compromises the security of information\\
 	\textbf{Security Mechanism} A process or device that is designed to detect, prevent or recover from a security attack\\
-	\textbf{Security Service} Service to prevent security attacks by implementing one or more mechanisms
+	\textbf{Security Service} Service to prevent security attacks by implementing one or more mechanisms\\
+	\textbf{Co-prime} are two numbers $a$ and $b$ when $\gcd(a,b) = 1$
 	
-	\section{Cryptography}
+	\section{One Key Cryptography}
 	\textbf{Kerckhoffs' principle} \textit{The enemy knows the system} $\rightarrow$ The cipher should remain secure if the adversary knows the specification of the cipher\\
 	$\Rightarrow$ not respecting this principle means \textbf{security by obscurity}\\
 	\textbf{Encryption Scheme} is a pair of encryption ($Enc$) and decryption ($Dec$) algorithm with $Dec_k(Enc_k(m)) = m$ for every plaintext message $m \in M$ plaintext space and key $k \in K$ key space. $Dec_k(m) = c$ generates the cipher $c \in C$ ciphertext space.\\
@@ -164,10 +165,48 @@
 	${M}_K = Enc_{K0}(M), Tag_{K1}(Enc_{K0}(M))$ is a message $M$ that is encrypted and authenticated with key pair $K$.
 	\textbf{Needham-Schroeder protocol} is a protocol for key exchange that prevents against reply and man-in-the-middle attacks (adversary can't reply the answer of the server because of the nonce, adversary can't manipulate message from Alice to Bob to change the identity who's sending the message)\\
 	\includegraphics[width=\textwidth]{figures/needham-schroeder-protocol.JPG}\\
-	\textbf{Peer-to-peer key distribution} can be achieved with public key cryptography\\
-	% TODO continue with lecture 04
+	\textbf{Peer-to-peer key distribution} can be achieved with public key cryptography
 	
-
+	\section{Public Key Cryptography}
+	\paragraph{Encryption} Instead of using one key $k$, use a public key $pk$ for encryption and a private or secret key $sk$ for decryption.\\
+	$\Rightarrow$ everyone can encrypt messages for the person who owns the private key because the encryption key is public
+	\paragraph{Authentication} Use the private key to create a tag (also called signing a message) and the public key to validate the tag\\
+	$\Rightarrow$ everyone can validate tags from the person who owns the private key. So signatures can be passed on and also be verified by a third party.
+	\paragraph{Problems}
+	\begin{itemize}
+		\item how are the public keys exchanged?
+		\item how to revoke keys?
+	\end{itemize}
 	
+	\subsection{RSA algorithm}
+	RSA is a trapdoor one-way function which can be inverted if a secret (the secret key) is known. The security relies on the hardness of the \textbf{factorization of large integers}.\\
+	\textbf{Key generation} Generate large primes $p$, $q$ (1024 bits each is seen as secure $\rightarrow$ 2048 bit RSA)\\
+	Compute $N=pq$ and $\varphi(N)=(p-1)(q-1)$, choose $e$ as co-prime to $\varphi(N)$, choose unique $d$ as inverse of $e \mod \varphi(N) \rightarrow ed = 1 \mod \varphi(N)$\\
+	\textbf{Public key} = $(e,N)$, \textbf{private key} = $d$\\
+	\textbf{Encryption} $c = m^e \mod N$\\
+	\textbf{Decryption} $c^d \mod N = (m^e)^d \mod N = m$\\
+	$\Rightarrow$ To be secure a (pseudo-)random padding is required so that the algorithm doesn't output the same ciphertext for the same plaintext.
 	
-\end{document}
+	\subsection{Elgamal}
+	Another public key cryptosystem which is based on the discrete logarithm hardness assumption.
+	
+	\subsection{Distribution of public keys}
+	\textbf{Cerification Authority (CA)} signs certificates that hold the public key of a person and specify to which person it belongs. So everyone who has the public key of the CA and trusts it can verify the certificate.\\
+	\textbf{Certificate Chain} CA certificates a person $P_1$ who can certificate another person $P_2$. A third person who trusts the CA and $P_1$ can now trust $P_2$. But \textbf{trust is not transitive}! CA must grant $P_1$ the right to certificate others (recommendation levels limit the length of the certification chain).\\
+	\textbf{HTTPS/SSL} Root certificates that certificate a CA come with the browser and are build-in with recommendation level 1. So the browser trusts every certificate signed by the build-in CAs.
+	
+	\subsection{Diffie-Hellman key exchange}
+	To encrypt the communication between two parties one key cryptography is used more often but the key is established using public key cryptography (for example HTTPS). This is because public key cryptography requires more computational power and is therefore slower. The Diffie-Hellman protocol is for exchanging new session keys for synchronous encryption. It relies on the hardness assumption of the difficulty of solving the \textbf{discrete logarithm problem (DLP)}.
+	\begin{enumerate}
+		\item choose prime $p$
+		\item choose generator $g$ of $\mathbb{Z}_p^*$ (generator can compose every number in $\mathbb{Z}_p^* = x \mod p$ when multiplied with itself several times)
+		\item Alice chooses random $x$ with $0 < x < p-2$ and calculates $h_1 = g^x \mod p$ and sends it to Bob
+		\item Bob chooses random $y$ with $0 < y < p-2$ and calculates $h_2 = g^y \mod p$ and sends it to Alice
+		\item the common key is $k = h_1^y \mod p = h_2^x \mod p = g^{xy} \mod p$
+	\end{enumerate}
+	$\Rightarrow$ because the logarithm in closed groups (discrete logarithm) is hard to compute this scheme is secure\\
+	$\Rightarrow$ does not protect against man-in-the-middle attacks
+	
+	% TODO continue with lecture 06
+	
+	\end{document}

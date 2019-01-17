@@ -58,8 +58,14 @@
 		\item \textbf{A}uthenticity: Being able to verify a party
 		\item \textbf{A}ccountability: To guaranty that a property or action belongs to one specific entity
 	\end{enumerate}
+	\textbf{Secrecy} Keep data hidden from unintended receivers\\
+	\textbf{Privacy} Keep data about a person secret\\
+	\textbf{Anonymity} Keep identity of a communicating party secret\\
+	\textbf{Authorization} Allowing another entity to perform an action (access control)\\
 	\textbf{Security Threat} A potential for violation of security (interruption (a), interception (p), modification (a), fabrication (a) of information) $\rightarrow$ splits up into active and passive\\
 	\textbf{Security Attack} Action that compromises the security of information\\
+	\textbf{Passive Attacker} Listens to communication and tries to gain information about it\\
+	\textbf{Active Attacker} Manipulates communication (replay, alter, delete messages), Brute-force\\
 	\textbf{Security Mechanism} A process or device that is designed to detect, prevent or recover from a security attack\\
 	\textbf{Security Service} Service to prevent security attacks by implementing one or more mechanisms\\
 	\textbf{Co-prime} are two numbers $a$ and $b$ when $\gcd(a,b) = 1$
@@ -207,6 +213,49 @@
 	$\Rightarrow$ because the logarithm in closed groups (discrete logarithm) is hard to compute this scheme is secure\\
 	$\Rightarrow$ does not protect against man-in-the-middle attacks
 	
-	% TODO continue with lecture 06
+	\section{Network Security}
+	\textbf{Traditional network security model} trusted end nodes, unreliable network (f.e. internet)\\
+	\textbf{Sniffing} Listening to network traffic and try to learn confidential information\\
+	\textbf{Spoofing} Sending face messages pretending to be someone else\\
+	\textbf{Man in the middle (MitM)} Manipulating message flow\\
+	\textbf{Denial of Service} Attacking a service so that it is not available anymore
+	
+	\subsection{Internet protocol suite}
+	Communication on the internet is redirected over routers which work on the network layer.\\
+	\includegraphics[width=\textwidth]{figures/internet-protocol-suite.JPG}\\
+	\begin{tabular}{|l|l|l|}
+		\hline 
+		\textbf{Acronym} & \textbf{Full name} & \textbf{Description} \\ 
+		\hline 
+		HTTP & Hypertext Transfer Protocol & Request-response protocol for communication \\ 
+		\hline 
+		IP & Internet Protocol & Relaying packets in/between networks \\ 
+		\hline 
+		IPSec & IP Security Protocol & Security layer for IP \\ 
+		\hline 
+		TCP & Transmission Control Protocol & Connection-oriented protocol for IP networks \\ 
+		\hline
+		UDP & User Datagram Protocol & Exchange messages in IP network \\ 
+		\hline 
+		SSL/ & Secure Sockets Layer & Adds end-to-end security at transport layer \\ 
+		TSL & Transport Layer Security Protocols & \\ 
+		\hline 
+		SSH & Secure Shell & Cryptographic layer for command shell \\ 
+		\hline 
+		MAC & Media Access Control & Link Layer packet delivery to hosts \\ 
+		\hline 
+		LLC & Logical Link Control & Flow control and error control duties \\ 
+		\hline 
+		DNS & Domain name system protocol & Translates domain names to IP addresses \\ 
+		\hline 
+		DHCP & Dynamic Host Configuration Protocol & Dynamic assignment of host configuration \\ 
+		\hline 
+		ICMP & Internet Control Message Protocol & Communicate errors and operational information \\ 
+		\hline 
+		ARP & Address resolution protocol & Maps IP to MAC address \\ 
+		\hline 
+	\end{tabular} 
+
+	% TODO continue with lecture 06, slide 26
 	
 	\end{document}

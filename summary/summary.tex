@@ -155,7 +155,7 @@
 	\section{Message authentication}
 	Ensure that a message is from a specified party and was not modified during transition.
 	\textbf{Message authentication code (MAC) scheme} is a pair of tag ($Tag$) and verify ($Vrfy$) algorithm with $Vrfy_k(m,Tag_k(m)) = yes$ (tag is valid) for every plaintext message $m \in M$ plaintext space and key $k \in K$ key space. $Tag_k(m) = t$ generates a tag $t \in T$ set of tags. The verify algorithm just computes the tag again from the plaintext and compares the result with the given tag.\\
-	$\rightarrow$ can be constructed from block ciphers (f.e. CBC-MAC) or hash functions\\
+	$\rightarrow$ can be constructed from block ciphers (e.g. CBC-MAC) or hash functions\\
 	\textbf{Replay attack} MACs do protect against the modification of the message through a third party but not against replaying an already delivered message with a valid tag again. Solution: time-stamps, sequence numbers, ...
 	\textbf{Splicing attack} A CBC-MAC should be used with the message length $|m|$ as initialization vector (IV). Otherwise a splicing attack is possible:\\
 	\includegraphics[width=\textwidth]{figures/splicing-attack.JPG}
@@ -214,7 +214,7 @@
 	$\Rightarrow$ does not protect against man-in-the-middle attacks
 	
 	\section{Network Security}
-	\textbf{Traditional network security model} trusted end nodes, unreliable network (f.e. internet)\\
+	\textbf{Traditional network security model} trusted end nodes, unreliable network (e.g. internet)\\
 	\textbf{Sniffing} Listening to network traffic and try to learn confidential information\\
 	\textbf{Spoofing} Sending face messages pretending to be someone else\\
 	\textbf{Man in the middle (MitM)} Manipulating message flow\\
@@ -256,6 +256,51 @@
 		\hline 
 	\end{tabular} 
 
-	% TODO continue with lecture 06, slide 26
+	\subsection{Attacks}
+	\paragraph{Link layer} Describes attacks on link layer protocols\\
+	\textbf{MAC flooding} Switches manage a list which MAC address is connected to which port so packets for a MAC address will only be forwarded to the known port. The attacker floods the switch with new mappings so that the list runs full. If the switch now receives a packet for a MAC address it doesn't know, it is broadcasted to all ports, so the attacker can read the traffic.\\
+	$\Rightarrow$ can be prevented by port security (limit mappings per port) or control network access separately\\
+	\textbf{ARP attacks} ARP is a protocol to find the MAC address of a party to the given IP address within a local network. It uses request-response architecture and mapping entries get renewed even if there's no request.\\
+	$\rightarrow$ Denial-of-service and man-in-the-middle possible\\
+	\includegraphics[width=0.5\textwidth]{figures/arp-dos1.JPG}
+	\includegraphics[width=0.5\textwidth]{figures/arp-dos2.JPG}\\
+	\includegraphics[width=0.33\textwidth]{figures/arp-mitm1.JPG}
+	\includegraphics[width=0.33\textwidth]{figures/arp-mitm2.JPG}
+	\includegraphics[width=0.33\textwidth]{figures/arp-mitm3.JPG}\\
+	$\Rightarrow$ can be prevented by static ARP entries, certification and validation of responses, detect multiple IPs for single MAC
+	
+	\paragraph{Network layer} Describes attacks on network layer protocols\\
+	\textbf{Ping flood} Send excessive amounts of ping requests to victim. This reduces the resources that can be used to answer other connections.\\
+	$\Rightarrow$ Disallow pings completely, limits for ping requests (rate, size)\\
+	\textbf{Smurf attack against ICMP} Send ping request with victim's IP as source address to broadcast address. Every network client will send a ping response to the victim.\\
+	$\Rightarrow$ Disallow pings to broadcast addresses
+	
+	\paragraph{Transport layer} Describes attacks on transport layer protocols\\
+	\textbf{SYN flood} Normal TCP flow: A:SYN $\rightarrow$ B:SYN-ACK $\rightarrow$ A:ACK. If an attacker A sends multiple SYN packets but not the ACK packets the server B keeps half-open connections. If its limit is reached new connections won't be accepted.\\
+	$\Rightarrow$ can be prevented by dropping oldest half-open handshake, TCP Cookie Transaction (server and client support required), SYN cookie\\
+	\textbf{TCP Session hijacking} Authentication of sessions often only during creation. After that an attacker could read the increasing sequence numbers from sent packets and reply to the server with the next higher sequence number to take over the session. The attacker has to be faster than the regular client.\\
+	$\Rightarrow$ can be prevented by using SSL/TSL
+	
+	\paragraph{Application layer} Describes attacks on application layer protocols\\
+	\textbf{DHCP starvation} Client asks for network configuration (e.g. IP address to use). The attacker can request multiple IP addresses to produce a denial of service when there's no free IP address left.\\
+	\textbf{Rogue DHCP} Attacker claims all IP addresses. If new client requests one the attacker has to answer faster than the regular DHCP server and tell the client to take him as gateway to read his traffic $\rightarrow$ Man-in-the-middle\\
+	$\Rightarrow$ can be prevented by monitoring DHCP traffic, port security to prevent attackers from using multiple MAC addresses
+	\textbf{DNS amplification} DNS responses are up to 50 times larger than the requests. So by adding a victim's IP address as source an attacker can produce much traffic towards a victim (can be increased by using a botnet) $\rightarrow$ denial-of-service\\
+	$\Rightarrow$ can be prevented by using DNSSEC or DNSCurve\\
+	\textbf{WiFi deauthentication} An attacker can send a deauthentication frame (not encrypted) with the victim's MAC to the access point. So the victim gets disconnected.
+	
+	\subsection{Layer Security}
+	\paragraph{Network Layer Security - IPSec} End-to-end encryption requires application layer security which is complicated to handle for the user (manage keys), for transport layer security the applications needs to be changed $\rightarrow$ network layer security can happen without the user noticing (e.g. VPN)\\
+	\textbf{Modes of operation}
+	\begin{itemize}
+		\item Transport mode: Encrypts IP packet's payload, not the header. Used between hosts.
+		\item Tunnel mode: Entire IP packet is encrypted and is payload of a surrounding new IP packet which can have different target and source addresses. Can be used between hosts, gateways or host-gateway
+	\end{itemize}
+	Authenticate over certificate chain, encrypt with synchronous connection key that needs to be exchanged.
+
+	\paragraph{Transport Layer Security - SSL/TLS} Additional sublayer on top of TCP to encrypt payload. Protocols that run over TCP can run over SSL/TLS with a few changes (e.g. reserve extra port): HTTP $\rightarrow$ HTTPS, SMTP $\rightarrow$ SMTPS, ...\\
+	Authenticate over certificate chain, encrypt over pre-exchanged synchronous connection key.
+	
+	% TODO continue with lecture 08
 	
 	\end{document}

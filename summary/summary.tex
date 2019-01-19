@@ -43,10 +43,12 @@
 	%                         Start here
 	% --------------------------------------------------------------
 	
-	\title{IT-Security}%replace with the appropriate homework number
-	\author{Michael Gabler} %if necessary, replace with your course title
+	\title{IT-Security}
+	\author{Michael Gabler}
 	
 	\maketitle
+	\tableofcontents
+	\newpage
 	
 	\section{Definitions}
 	
@@ -301,6 +303,35 @@
 	\paragraph{Transport Layer Security - SSL/TLS} Additional sublayer on top of TCP to encrypt payload. Protocols that run over TCP can run over SSL/TLS with a few changes (e.g. reserve extra port): HTTP $\rightarrow$ HTTPS, SMTP $\rightarrow$ SMTPS, ...\\
 	Authenticate over certificate chain, encrypt over pre-exchanged synchronous connection key.
 	
-	% TODO continue with lecture 08
+	\section{Authentication}
+	Authentication for humans is not trivial because it's hard for them to remember long passphrases or keys. Usually secure channel is established then human authenticates itself.\\
+	\textbf{Credentials} Claim for an identity + proof $\rightarrow$ username + password
 	
+	\subsection{Knowledge-based authentication}
+	Identity verification via shared secret, e.g. password, pin, one-time password, questions \& answers
+	\paragraph{Advantages} everyone can use it, cheap, fast, easy distribution, can be passed on, legal protection
+	\paragraph{Disadvantages} user-dependent, usability vs. security, can be forgotten, observation possible (just watching, keyloggers), future security (computational power increases so must the password length/complexity)
+	\paragraph{Attacks} Online cracking (brute-force) $\rightarrow$ use rate- and guess-limiting, offline cracking (e.g. password hash) $\rightarrow$ store passwords secure as hash with salt and pepper, hash cracking with rainbow tables: pre-computed table with hashes that get reduced and hashed again
+	\paragraph{Entropy} Amount of missing information measured in bits. Human chosen passwords have less entropy than random ones.
+	$$H = -\Sigma_{x \in passwords}(P(x) \log_2 P(x))$$
+	Random passwords have entropy $H = \log_2 N$ where $N$ are all possible passwords.
+	\paragraph{Challenge-Response} Authentication between client and server based on a shared secret which is not transmitted. Server generates challenge, client computes solution to challenge with shared secret and sends it to the server which checks it and returns its proof.
+	
+	\subsection{Ownership-based authentication}
+	Identity verification via something you own, e.g. device, key files, hardware tokens (ID cards)
+	\paragraph{Advantages} more entropy due to key storage, easy to revoke, depends on physical security, can be passed on like physical key
+	\paragraph{Disadvantages} high costs due to hardware, easy to loose/steal, communication between hardware and reader could be eavesdropped
+	
+	\subsection{Inherence-based authentication}
+	Identity verification via behavioral or physiological characteristics (biometrics)
+	\paragraph{Advantages} can't be stolen or forgotten, easy to use
+	\paragraph{Disadvantages} can't be changed when compromised, could change or become unavailable (through accidents), can't be passed on for temporary access of thirds, same login data for different services
+	\paragraph{Selection of biometric parameters} universal, unique, permanent, measurable, performance, acceptable (by the population), circumvention (hard to fool the system)
+	\paragraph{Examples} fingerprints (can be gained from surfaces, pictures), facial recognition (3D to prevent unlocking with photos), voice recognition, signature, DNA, iris scan, typing patterns, gait, mouse movement
+	
+	\subsection{Multi-factor authentication}
+	Identity verification via combining multiple authentication methods $\rightarrow$ usability security trade-off\\
+	For example combine passwords with face recognition, sms codes, email links, etc.
+	
+	% TODO continue with lecture 09
 	\end{document}

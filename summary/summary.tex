@@ -333,5 +333,44 @@
 	Identity verification via combining multiple authentication methods $\rightarrow$ usability security trade-off\\
 	For example combine passwords with face recognition, sms codes, email links, etc.
 	
-	% TODO continue with lecture 09
+	\section{Software security}
+	\textbf{Runtime attacks} are attacks that happen during the runtime of a program\\
+	\textbf{Remote code execution} means that arbitrary code from the attacker is executed on the target system\\
+	\textbf{Privilege escalation} increases the abilities that a program has to manipulate the system (e.g. normal user to admin)\\
+	\textbf{Architectures} common system architectures are x86-32, x64-64, ARM\\
+	\textbf{Most important registers in x86-32 architecture}\\
+	\begin{tabular}{|l|l|}
+		\hline 
+		\textbf{Register} & \textbf{Description} \\ 
+		\hline 
+		EAX, EBX & general purpose registers \\ 
+		ECX, EDX &  \\ 
+		ESI, EDI &  \\ 
+		EBP &  \\ 
+		\hline 
+		ESP & Stack pointer (general purpose) \\ 
+		\hline 
+		EIP & Instruction pointer \\ 
+		\hline 
+		EFLAGS & Flags for arithmetic operations (e.g. carry flag, overflow flag, ...) \\ 
+		\hline 
+	\end{tabular}\\
+	\textbf{Endianness} defines the order of bytes in the memory
+	\begin{itemize}
+		\item \textbf{Big-endian format} most significant bytes first: 0xAF11 $\rightarrow$ 0x0000AF11 (32 bit) (used in IPv4, TCP, ...)
+		\item \textbf{Little-endian format} least significant bytes first: 0xAF11 $\rightarrow$ 0x11AF0000 (32 bit) (used for x86-32)
+	\end{itemize}
+	\textbf{Memory layout}\\
+	\includegraphics[width=0.2\textwidth]{figures/memory-layout.png}\\
+	Stack consists out of multiple frames, one frame per function call which holds the function arguments, the return address (saved instruction pointer), saved base pointer of the calling function and local variables of the function.\\
+	Manipulation of the program flow can be achieved by a buffer overflow. When the attacker enters data that is stored in a data structure without bound checking and the entered data exceeds the reserved space it will overwrite data on the stack, e.g. the return address.
+	
+	\subsection{Code Injection}
+	The attacker tries to inject arbitrary code (often the execution of a shell) into the program flow. Not often used due to data execution prevention (DEP) which prevents code execution from writable memory.\\
+	\textbf{Format string bug} Including user input in the format string of e.g. \textit{printf} is dangerous because if there are placeholder like\textit{ \%s} used and no arguments are given, this will print values from the stack. If there are more placeholders without arguments than values on the stack the program will crash $\rightarrow$ denial-of-service
+	
+	% TODO continue with lecture 10
+	
+	\subsection{Code reuse} The attacker tries to manipulate the program flow so that existing code is executed in a different order.
+	
 	\end{document}

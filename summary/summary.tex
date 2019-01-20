@@ -398,6 +398,84 @@
 	\end{tabular}
 
 	\section{Platform security}
-	% TODO continue with lecture 11
+	Platform security takes care of attackers within the computer system. Core security mechanisms:
+	\begin{itemize}
+		\item \textbf{Isolation}: separate systems can only interact over pre-defined interfaces
+		\item \textbf{Access Control (AC)}: control access to system resources (files, memory areas, external devices, CPU, ...) $\rightarrow$ limits access between subjects and objects, traditionally authentication + authorization
+	\end{itemize}
+	\textbf{User} of a computer system can be a human being or an agent, both are equal in terms of platform security and have an account or profile.\\
+	\textbf{Subject} is an active entity such as a running process.\\
+	\textbf{Object} is a passive entity such as a file or a database record.\\
+	\textbf{Monolithic design} means that a system has several inputs and outputs but the internals of the system can freely communicate between each other. $\rightarrow$ once an attacker is in the system he has access to everything.\\
+	\textbf{Component design} means that the system consists out of several components that can be seen as individual subsystems with dedicated in- and output interfaces. $\rightarrow$ It's harder for the attacker to compromise the system because he has to infiltrate every component.\\
+	\textbf{Trusted computing base (TCB)} includes all systems that need to be trusted to implement system-critical functionality (e.g. access control)\\
+	\textbf{Security design principles}
+	\begin{itemize}
+		\item Economy of mechanism: keep the design simple and small
+		\item Complete mediation: check access rights for every access
+		\item Open design: no security by obscurity, discuss design openly
+		\item Least-common mechanism: minimize the amount of common components to more than one user
+		\item Fail-safe defaults: refuse access if not specified differently
+		\item Separation of privilege: different access rights for different resources (e.g. network and file system)
+		\item Least privileges: every system user should only obtain the minimal set of required privileges
+		\item Privacy considerations: every information should be considered as private and only passed on if necessary
+		\item Psychological acceptance: usability of security systems is important to be aware of, otherwise users won't use it
+	\end{itemize}
+
+	\subsection{Access control models}
+	\paragraph{Discretionary access control (DAC)} Users declare who has access to their data. The owner of data gives the access rights e.g. by creating passwords for directories of files (problem of revocation). $\rightarrow$ can be enhanced by access control lists or matrices (ACL, ACM) which lists the abilities for every subject to perform actions on any object.
+	
+	\paragraph{Mandatory access control (MAC)} Access is controlled with rules set by the system administrator, e.g. DRM (music purchased can be played but not shared). The access privileges can't be passed on.
+	
+	\paragraph{Role-based access control (RBAC)} Users are mapped to roles which have specific access rights. Users/subjects are collected in groups, access rights on objects are collected in roles. Roles can form hierarchies.
+	
+	\paragraph{Chinese Wall model} Information/objects that are in a conflict should not be accessed by the same subject (e.g. tax information about competing clients) so if a subject S accesses one of the objects it won't be able to access the conflicting object (S falls on one side of the wall).\\
+	$\Rightarrow$ separation of duty policies are stateful and need to remember all past events
+	
+	\paragraph{Attribute-based access control} Access is granted or denied depending on attributes/properties of the subject (e.g. location, age, etc.)
+	
+	\subsection{Process isolation in operating systems}
+	Processes need to be isolated because the physical memory is a shared resource that needs protection (e.g. process should not overwrite other processes' memory). This is achieved by memory virtualization. Every process believes it owns the hole memory and can write to all addresses. The OS translates access to virtual memory addresses to physical ones.To modify the address translation table the CPU must be in kernel mode (user mode and kernel mode are implemented in hardware).\\
+	\textbf{Switching user mode $\rightarrow$ kernel mode} to run a user program
+	\begin{enumerate}
+		\item create process and initialize address space
+		\item load the program to the memory
+		\item initialize translation table
+		\item set hardware pointer to the translation table
+		\item set CPU to user mode
+		\item jump to program entry
+	\end{enumerate}
+	\textbf{Switching kernel mode $\rightarrow$ user mode} for system calls (program asks os to do something for it), hardware interrupts, program exceptions
+	\begin{enumerate}
+		\item set CPU to kernel mode
+		\item save program counter
+		\item jump to handler in os kernel
+		\item the handler saves old register values
+	\end{enumerate}
+
+	\subsection{Access control in operating systems}
+	\paragraph{AC in UNIX/LINUX} Users have username and user id (0 = root = superuser), are collected in groups that have names and ids, too. The account information is stored in \textit{/etc/passwd} in this format:
+	\begin{center}
+		\textit{username:password (as hash):UID:GID (of primary group):name:homedir:shell}
+	\end{center}
+	and the group information is stored in \textit{/etc/group} in this format:
+	\begin{center}
+		\textit{groupname:password:GID:list of users}
+	\end{center}
+	\textbf{Subjects} are processes that have ids (PID) and can create new processes. They have a real UID/GID e.g. from the logged-in user and an effective UID/GID from the file being executed or the parent process.\\
+	\textbf{Objects} are files, directories or devices that are organized in a tree-like file system. They all store information about the owner user and group and the permissions.\\
+	\textbf{Permissions} for the objects are grouped for the owner, the owning group and other users (r = read access, w = write access, x = executable, s = executes with the effective UID or GID of the owning user or group). Only processes running as root can listen to TCP or UDP ports 0-1023.\\
+	Default permissions for files: 666, for executables: 777. Umask restricts them.
+	
+	\paragraph{AC in Windows} Principals are users, machines, groups, etc. They have a unique security identifier (SID). Users are stored either locally on a machine or on a server that acts as domain controller (DC) in an active directory (AD)\\
+	\textbf{Subjects} are processes or threads that act for a principal. They hold access tokens that are managed in a list to map them to objects access rights.\\
+	\textbf{Objects} are files, registry keys, printers, etc. They have a security descriptor which holds the discretionary access control list (DACL) that can be modified by its owner and holds SIDs with corresponding access rights (access control entities = ACEs).\\
+	\textbf{Login} winlogon.exe takes credentials, Local Security Authority (LSA, lsass.exe) verifies them. The logon process starts a shell (explorer.exe) running as the user (= principal) in a new login session. All processes of a login session get destroyed during logout.\\
+	\textbf{Inheritance} ACEs are inherited from parent containers. To accelerate the permission check they are cached in child objects which results in a long waiting time when the permissions of a high level container are changed (because they are copied to every child).\\
+	\textbf{User account control (UAC)} Users have two tokens, one with restricted privileges and one with admin privileges. UAC pops up when a process wants to elevate to gain admin privileges.
+	
+	\paragraph{AC on mobile systems} Android, iOS\\
+	\textbf{Subjects} are apps that get permissions to access objects when needed. Apps are isolated and can access only the internet and their own data by default. There's no possibility to communicate between apps through file storage.\\
+	\textbf{Objects} are phone features and services such as location, sms, camera, etc.
 	
 	\end{document}

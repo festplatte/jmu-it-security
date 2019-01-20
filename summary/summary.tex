@@ -369,8 +369,35 @@
 	The attacker tries to inject arbitrary code (often the execution of a shell) into the program flow. Not often used due to data execution prevention (DEP) which prevents code execution from writable memory.\\
 	\textbf{Format string bug} Including user input in the format string of e.g. \textit{printf} is dangerous because if there are placeholder like\textit{ \%s} used and no arguments are given, this will print values from the stack. If there are more placeholders without arguments than values on the stack the program will crash $\rightarrow$ denial-of-service
 	
-	% TODO continue with lecture 10
+	\subsection{Code reuse} The attacker tries to manipulate the program flow so that existing code is executed in a different order, e.g. call security-critical functions in shared libraries (libc is often linked to most C programs). To achieve arbitrary code execution the attacker can try to use return-oriented programming.
 	
-	\subsection{Code reuse} The attacker tries to manipulate the program flow so that existing code is executed in a different order.
+	\paragraph{Return-oriented programming (ROP)} Combine small instruction sequences (e.g. of libc) with return statements at the end to gadgets that perform a particular operation (e.g. load, store, xor, ...). By jumping from one gadget to the other (performing buffer overflow attacks to set the return address) arbitrary computations are possible. It's easy to achieve a Turing-complete language because only a few gadgets/commands are required: conditional jump, store, load\\
+	\textbf{Defense strategies}\\
+	\textbf{Shadow stack} is a copy of the original stack to validate whether a return instruction targets its original caller\\
+	\textbf{Remove unintended return instructions} to minimize the gadget space\\
+	\textbf{Behavioral-based heuristics} check the number of instructions executed between return instructions $\rightarrow$ affords computational power
+	
+	\paragraph{Jump-oriented programming (JOP)} This tries to manipulate the jump address for indirect jumps or call instructions instead of manipulating the return address on the stack. This requires a sequence of \textbf{u}pdating the global state, \textbf{l}oading the address of the next instruction, \textbf{b}ranch to the address loaded $\rightarrow$ a so called ULB-sequence which doesn't occur very often. That's why its reused as a "trampoline sequence" which is called after every gadget.\\
+	This can also achieve a Turing-complete language and bypasses the defense strategies for ROP.\\
+	\textbf{Defense strategies}\\
+	\textbf{Stack canaries/stack cookies} Insert random "canary" value next to sensitive information (e.g. end of buffer) on the stack. With a buffer overflow the attacker would overwrite the canary value which should then be checked before a jump or return instruction. If the canary was overwritten the program should terminate.\\
+	\textbf{Control-flow integrity (CFI)} Build a graph of the program flow and check it when the program flow is redirected (jump, call, return). This affords a lot of computational power, still hot research topic.\\
+	\textbf{Software diversity} Compile program $N$ times with a different memory layout each time so that an exploit can only affect one of them.\\
+	$\Rightarrow$ Unpractical for software distribution because usually software binaries are downloaded so everyone has the same memory layout.\\
+	\textbf{Address space layout randomization (ASLR)} randomizes the base address of code/data segments at startup. Can be compromised using brute-force if processes are cloned with the same address space layout (e.g. Apache Webserver)\\
+	\\
+	\begin{tabular}{|l|l|}
+		\hline 
+		\textbf{randomization} & \textbf{control-flow integrity} \\ 
+		\hline 
+		+ low performance overhead & - high performance overhead \\ 
+		+ scales well to complex software & - hard to integrate in complex software \\ 
+		- high entropy required & + strong security guarantees \\ 
+		- memory disclosure hard to prevent & - tradeoff: performance \& security \\ 
+		\hline 
+	\end{tabular}
+
+	\section{Platform security}
+	% TODO continue with lecture 11
 	
 	\end{document}

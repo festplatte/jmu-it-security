@@ -478,4 +478,16 @@
 	\textbf{Subjects} are apps that get permissions to access objects when needed. Apps are isolated and can access only the internet and their own data by default. There's no possibility to communicate between apps through file storage.\\
 	\textbf{Objects} are phone features and services such as location, sms, camera, etc.
 	
+	% TODO add information about BIBA
+	
+	\subsection{Mandatory Integrity Control}
+	In Windows used for sandboxing, e.g. for Internet Explorer\\
+	\textbf{Zone Identifier} identify the trust level of objects $\rightarrow$ stored in NTFS stream
+	
+	\subsection{Hardware-assisted computer security}
+	Basic idea: Hardware and operating system is trusted\\
+	\textbf{Trusted Platform Module (TPM)} is a secure co-processor mounted on the motherboard (e.g. has hardware random number generator, en/decryption engine, hash engine). They can be used to secure data (store cryptographic keys and hashes), detect configuration changes, integrity check on local network, authenticated boot. It stores two long-term keys, one private key for en/decryption and one attestation identity key. Because of limited storage, other keys are stored on external secure storage.\\
+	\textbf{Intel SGX} is a processor addon adding new instructions for security operations. It can perform isolated code execution.\\
+	\textbf{Enclave} builds a protected area within a process and can execute security relevant code there.
+	
 	\end{document}

@@ -108,7 +108,7 @@
 	
 	\subsection{Modern cryptography}
 	\textbf{One-way functions} are functions that are poly-time computable and hard to invert. Rely on a mathematical hardness assumption.\\
-	\textbf{Pseudorandom generators (PRG)} Generate bits that look random. Depens on a seed (for example system time). Can be constructed by using a one-way function. They are cryptographic if it's not % TODO finish definition\\
+	\textbf{Pseudorandom generators (PRG)} Generate bits that look random. Depens on a seed (for example system time). Can be constructed by using a one-way function. They are cryptographic if the next output is not predictable from the previous one.\\
 	\textbf{Stream cipher} cipher with an infinite stream of bits as output (for example RC4 used for WEP, WPA) $\rightarrow$ PRGs are stream ciphers\\
 	\textbf{Block ciphers} are almost equal to pseudorandom permutations (PRP) (permutation is pseudorandom if it can't be distinguished from a real random permutation). Block ciphers permute a predefined amount of plaintext or data into a ciphertext of the same length. Popular block ciphers are:\\
 	\begin{tabular}{|l|c|c|}
@@ -477,8 +477,6 @@
 	\paragraph{AC on mobile systems} Android, iOS\\
 	\textbf{Subjects} are apps that get permissions to access objects when needed. Apps are isolated and can access only the internet and their own data by default. There's no possibility to communicate between apps through file storage.\\
 	\textbf{Objects} are phone features and services such as location, sms, camera, etc.
-	
-	% TODO add information about BIBA
 	
 	\subsection{Mandatory Integrity Control}
 	In Windows used for sandboxing, e.g. for Internet Explorer\\
